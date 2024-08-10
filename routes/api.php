@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +14,7 @@ Route::get('/user', function (Request $request) {
 Route::
         namespace('App\Http\Controllers\Api\V1')
     ->middleware('auth:sanctum')
-    ->prefix('v1')
+    // ->prefix('v1')
     ->group(
         function () {
             // Route::get('/tracks', [TrackController::class, 'index']);
@@ -28,5 +29,7 @@ Route::
         }
     );
 
-Route::post('/sanctum/token', [AuthController::class, 'auth']);
+
+
+Route::post('/sanctum/token', [AuthController::class, 'register']);
 

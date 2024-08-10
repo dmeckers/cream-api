@@ -14,15 +14,19 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
+    public const EMAIL    = 'email';
+    public const PASSWORD = 'password';
+    public const NAME     = 'name';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        self::NAME,
+        self::EMAIL,
+        self::PASSWORD,
     ];
 
     /**

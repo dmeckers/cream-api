@@ -15,5 +15,8 @@ RUN apt-get update && apt-get install -y \
 # Install redis-cli
 RUN apt-get install -y redis-tools
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 # Clean up to reduce image size
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

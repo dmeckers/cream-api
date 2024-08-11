@@ -6,7 +6,6 @@ namespace App\Repositories\Users;
 
 use App\Models\User;
 
-
 class UserDbRepository
 {
     public function __construct(private readonly User $user)

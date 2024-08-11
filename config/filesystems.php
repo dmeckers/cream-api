@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', 's3'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,9 +39,21 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
+        ],
+
+        'minio' => [
+            'driver' => 's3',
+            'key' => 'creamcream',
+            'secret' => 'creamcream',
+            'region' => 'eu-east-1',
+            'bucket' => 'cream',
+            'endpoint' => 'http://cream-storage:9001',
+            'use_path_style_endpoint' => env('MINIO_USE_PATH_STYLE_ENDPOINT', false),
+            'url' => 'http://cream-storage:9001',
+            'throw' => true,
         ],
 
         's3' => [

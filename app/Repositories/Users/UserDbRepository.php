@@ -21,4 +21,9 @@ class UserDbRepository
     {
         return $this->user->findOrFail($id);
     }
+
+    public function findByEmail(string $email): User
+    {
+        return $this->user->firstWhere(User::EMAIL, $email);
+    }
 }

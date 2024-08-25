@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Repositories\Users\UserLogicRepository;
 use App\Requests\Auth\RegisterUserRequest;
+use App\Requests\Auth\LoginUserRequest;
 use App\Utils\LaravelGlobals;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
@@ -18,10 +20,22 @@ class AuthController extends Controller
     ) {
     }
 
+    public function refreshCookies(): Response
+    {
+        return new Response('', Response::HTTP_NO_CONTENT);
+    }
+
     public function register(RegisterUserRequest $request): JsonResponse
     {
         return $this->laravelGlobals->jsonResponse([
             'token' => $this->userLogicRepository->create($request->data())
+        ]);
+    }
+
+    public function login(LoginUserRequest $request): JsonResponse
+    {
+        return $this->laravelGlobals->jsonResponse([
+            'token' => $this->userLogicRepository->login($request->data())
         ]);
     }
 }

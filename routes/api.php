@@ -1,15 +1,12 @@
 <?php
 
 use App\Enums\RouteValidationEnum;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TracksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-Route::prefix('v1')->group(function () {
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::prefix('tracks')->group(function () {
         Route::get('/', [TracksController::class, 'listTracks']);
@@ -27,3 +24,12 @@ Route::prefix('v1')->group(function () {
         );
     });
 });
+
+Route::
+        namespace('Auth')->group(function () {
+            Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+            Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+            Route::get('/sanctum/token', [AuthController::class, 'refreshCookies']);
+        });

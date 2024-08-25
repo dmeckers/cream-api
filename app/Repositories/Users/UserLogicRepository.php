@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace App\Repositories\Users;
 
+use App\Data\Auth\LoginUserRequestData;
 use App\Data\Auth\RegisterUserRequestData;
 use App\Models\User;
+use Illuminate\Auth\AuthManager;
 
 class UserLogicRepository
 {
-    public function __construct(private readonly UserDbRepository $userDbRepository)
-    {
+
+    public function __construct(
+        private readonly UserDbRepository $userDbRepository,
+        private readonly AuthManager $auth,
+    ) {
     }
 
     public function create(RegisterUserRequestData $data): string
@@ -24,12 +29,14 @@ class UserLogicRepository
         return $user->createToken('sanctum')->plainTextToken;
     }
 
-    // public function login(RegisterUserRequestData $data): string
-    // {
-    //     $user = $this->userDbRepository->findOrFail($data->id);
+    public function login(LoginUserRequestData $data): string
+    {
+        if (!$this->auth->attempt($data->toArray())) {
+            throw new \Exception('Invalid credentials');
+        }
 
-    //     return $user->createToken('sanctum')->plainTextToken;
-    // }
+        return $this->auth->user()->createToken('sanctum')->plainTextToken;
+    }
 
     public function findOrFail(int $id): User
     {

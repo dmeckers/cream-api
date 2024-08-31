@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Data\Auth;
+namespace App\Http\Data\Auth;
 
 use Spatie\LaravelData\Data;
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginUserRequest;
+use App\Http\Requests\Auth\RegisterUserRequest;
 use Illuminate\Http\Response;
 use App\Repositories\Users\UserLogicRepository;
-use App\Requests\Auth\RegisterUserRequest;
-use App\Requests\Auth\LoginUserRequest;
 use App\Utils\LaravelGlobals;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;

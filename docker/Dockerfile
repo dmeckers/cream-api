@@ -1,0 +1,29 @@
+# Use the Franken PHP base image
+FROM dunglas/frankenphp
+
+# Update package list and install extensions
+RUN apt-get update && \
+    apt-get install -y \
+        curl \
+        wget \
+        libpq-dev \
+        libicu-dev \
+        libzip-dev \
+        libxml2-dev \
+        libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install \
+        pdo_pgsql \
+        intl \
+        zip \
+        gd \
+        xml && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy custom php.ini
+COPY ../php.ini /usr/local/etc/php/php.ini
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

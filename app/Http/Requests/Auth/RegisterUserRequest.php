@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Requests\Auth;
+namespace App\Http\Requests\Auth;
 
-use App\Data\Auth\RegisterUserRequestData;
+use App\Http\Data\Auth\RegisterUserRequestData;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterUserRequest extends FormRequest

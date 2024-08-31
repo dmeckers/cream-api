@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Data\Tracks;
+namespace App\Http\Data\Tracks;
 
 use Illuminate\Http\UploadedFile;
 use Spatie\LaravelData\Data;

@@ -4,30 +4,38 @@ declare(strict_types=1);
 
 namespace App\Repositories\Tracks;
 
-use App\Data\Tracks\StoreTrackRequestData;
-use App\Data\Tracks\UpdateTrackRequestData;
+use App\Http\Data\Tracks\StoreTrackRequestData;
+use App\Http\Data\Tracks\UpdateTrackRequestData;
 use App\Models\Track;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Filesystem\FilesystemManager;
+use Storage;
+use Str;
+use TrackNotUploadedException;
 
 class TrackLogicRepository
 {
-    public function __construct(private readonly TrackDbRepository $trackDbRepository)
-    {
+    public function __construct(
+        private readonly TrackDbRepository $trackDbRepository,
+        private readonly FilesystemManager $storage,
+    ) {
     }
 
+    /**
+     * @throws TrackNotUploadedException
+     */
     public function create(StoreTrackRequestData $data): Track
     {
-        // Track::FILE => $data->file->store('tracks'),
-
         return $this->trackDbRepository->create([
-            Track::NAME => $data->name,
-            Track::ARTIST => $data->artist,
-            Track::ALBUM => $data->album,
-            Track::GENRE => $data->genre,
-            Track::YEAR => $data->year,
-            Track::LENGTH => $data->length,
-            Track::PLAYS => $data->plays,
-            Track::RATING => $data->rating,
+            Track::FILE_URL => $this->uploadVerifyAndGetUrl($data),
+            Track::NAME => $data->name ?? 'Unknown name',
+            Track::ARTIST => $data->artist ?? 'Unknown artist',
+            Track::ALBUM => $data->album ?? 'Unknown album',
+            Track::GENRE => $data->genre ?? 'Unknown genre',
+            Track::YEAR => $data->year ?? 0,
+            Track::LENGTH => $data->length ?? 0,
+            Track::PLAYS => $data->plays ?? 0,
+            Track::RATING => $data->rating ?? 0,
         ]);
     }
 
@@ -65,5 +73,21 @@ class TrackLogicRepository
     public function delete(int $id): ?bool
     {
         return $this->trackDbRepository->delete($id);
+    }
+
+    /**
+     * @throws TrackNotUploadedException
+     */
+    private function uploadVerifyAndGetUrl(StoreTrackRequestData $data): string
+    {
+        $filename = $data->name ?? Str::lower(Str::replace(' ', '-', $data->file->getClientOriginalName()));
+
+        $this->storage->put($filename, $data->file);
+
+        if (!$this->storage->exists($filename)) {
+            throw new TrackNotUploadedException;
+        }
+
+        return $this->storage->url($filename);
     }
 }

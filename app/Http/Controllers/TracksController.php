@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Tracks\GetTrackRequest;
+use App\Http\Requests\Tracks\ListTracksRequest;
+use App\Http\Requests\Tracks\StoreTrackRequest;
+use App\Http\Requests\Tracks\UpdateTrackRequest;
 use App\Http\Resources\TrackResource;
 use App\Http\Resources\TrackResourceCollection;
 use App\Repositories\Tracks\TrackLogicRepository;
-use App\Requests\Tracks\StoreTrackRequest;
-use App\Requests\Tracks\GetTrackRequest;
-use App\Requests\Tracks\ListTracksRequest;
-use App\Requests\Tracks\UpdateTrackRequest;
 use App\Utils\LaravelGlobals;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -29,9 +29,8 @@ class TracksController extends Controller
         return $request->resourceCollectionResponse($this->trackLogicRepository->list());
     }
 
-    public function storeTrack(StoreTrackRequest $request)
+    public function storeTrack(StoreTrackRequest $request): TrackResource
     {
-        return 'yes';
         return $request->resourceResponse($this->trackLogicRepository->create($request->data()));
     }
 

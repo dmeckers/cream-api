@@ -1,16 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-
-Route::
-        namespace('App')->group(function () {
-            // Route::get('/healthcheck', [MainController::class, 'healthcheck'])->name('app.health-check');
-            // Route::get('/short-urls/s/{shortUrlCode}', [ShortUrlController::class, 'redirectShortUrl'])
-            //     ->middleware(ThrottleEnum::SHORT_URL);
-        });
-
-
 
 Route::
         namespace('Auth')->group(function () {

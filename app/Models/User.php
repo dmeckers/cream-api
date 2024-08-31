@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, HasPermissions;
+    use HasFactory, Notifiable, HasApiTokens, HasPermissions, HasRoles;
 
     public const EMAIL    = 'email';
     public const PASSWORD = 'password';

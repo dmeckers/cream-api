@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Requests\Tracks;
+namespace App\Http\Requests\Tracks;
 
-use App\Data\Tracks\UpdateTrackRequestData;
+use App\Http\Data\Tracks\UpdateTrackRequestData;
 use App\Http\Resources\TrackResource;
 use App\Models\Track;
 use Illuminate\Foundation\Http\FormRequest;

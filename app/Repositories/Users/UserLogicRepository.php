@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repositories\Users;
 
-use App\Data\Auth\LoginUserRequestData;
-use App\Data\Auth\RegisterUserRequestData;
+use App\Http\Data\Auth\LoginUserRequestData;
+use App\Http\Data\Auth\RegisterUserRequestData;
 use App\Models\User;
 use Illuminate\Auth\AuthManager;
 

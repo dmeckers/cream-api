@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Requests\Tracks;
+namespace App\Http\Requests\Tracks;
 
 use App\Http\Resources\TrackResourceCollection;
 use App\Utils\PermissionBook;

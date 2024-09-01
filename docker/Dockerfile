@@ -33,4 +33,4 @@ COPY ../ .
 
 RUN composer install
 
-RUN composer migrate
+# RUN composer migrate

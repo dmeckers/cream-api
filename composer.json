@@ -60,9 +60,9 @@
         ],
         "migrate": [
             "Composer\\Config::disableProcessTimeout",
-            "php artisan migrate --ansi && composer migrate:data"
+            "php artisan migrate --force --ansi  && composer migrate:data"
         ],
-        "migrate:data": "php artisan migrate --ansi --path database/migrations/data"
+        "migrate:data": "php artisan migrate --force --ansi --path database/migrations/data"
     },
     "extra": {
         "laravel": {

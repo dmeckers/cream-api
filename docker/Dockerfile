@@ -32,3 +32,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY ../ .
 
 RUN composer install
+
+RUN composer migrate

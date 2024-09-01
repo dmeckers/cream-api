@@ -8,19 +8,26 @@
 
 {$CADDY_EXTRA_CONFIG}
 
-# Primary server block with self-signed certificate
+# Primary server block with custom TLS certificate
 https://cream-fm.art {
     root * public/
     encode zstd br gzip
+    tls internal
 
-      {$CADDY_SERVER_EXTRA_DIRECTIVES}
-        php_server
+    {$CADDY_SERVER_EXTRA_DIRECTIVES}
+    php_server
 }
 
-# Stream redirect block
+# Stream proxy block
 https://cream-fm.art/stream {
-    root * public/
-    encode zstd br gzip
+    # Match the path for streaming
+    @stream path /stream/*
 
-    redir /stream http://cream-cast:8004/cream.mp3 permanent
-}
+    # Rewrite the path so that /stream maps to /cream.mp3 in the upstream service
+    rewrite @stream /cream.mp3
+
+    # Reverse proxy with base URL only
+    reverse_proxy @stream http://cream-cast:8004
+
+    encode zstd br gzip
+    tls internal

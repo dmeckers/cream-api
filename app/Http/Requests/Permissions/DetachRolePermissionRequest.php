@@ -2,27 +2,13 @@
 
 namespace App\Http\Requests\Permissions;
 
+use App\Http\Data\Permissions\DetachRolePermissionRequestData;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DetachRolePermissionRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+    public function data(): DetachRolePermissionRequestData
     {
-        return false;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            //
-        ];
+        return resolve(DetachRolePermissionRequestData::class);
     }
 }

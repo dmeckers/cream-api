@@ -41,5 +41,8 @@ class TrackDbRepository
         return $this->findOrFail($id)->delete();
     }
 
-    // public function search(array $data): Collection
+    public function existsByName(string $name): bool
+    {
+        return $this->track->where(Track::NAME, $name)->exists();
+    }
 }

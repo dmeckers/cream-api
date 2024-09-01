@@ -1,8 +1,10 @@
 <?php
 
+namespace App\Exceptions\Tracks;
+
 declare(strict_types=1);
 
-class TrackNotUploadedException extends Exception
+class TrackNotUploadedException extends \Exception
 {
     public function __construct()
     {

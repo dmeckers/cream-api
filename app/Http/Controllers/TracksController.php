@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Tracks\DeleteTrackRequest;
 use App\Http\Requests\Tracks\GetTrackRequest;
 use App\Http\Requests\Tracks\ListTracksRequest;
 use App\Http\Requests\Tracks\StoreTrackRequest;
@@ -44,18 +45,10 @@ class TracksController extends Controller
         return $request->resourceResponse($this->trackLogicRepository->update($request->data()));
     }
 
-    public function deleteTrack(int $id): JsonResponse
+    public function deleteTrack(DeleteTrackRequest $request): JsonResponse
     {
-        return $this->laravelGlobals->jsonResponse(
-            [
-                'deleted' => $this->trackLogicRepository->delete($id)
-            ],
-            Response::HTTP_NO_CONTENT
-        );
-    }
+        $this->trackLogicRepository->delete($request->getTrackId());
 
-    // public function search(SearchTrackRequest $request): JsonResponse
-    // {
-    //     return $this->trackLogicRepository->search($request->data());
-    // }
+        return $this->laravelGlobals->jsonResponse([], Response::HTTP_NO_CONTENT);
+    }
 }

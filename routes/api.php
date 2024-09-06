@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         );
     });
 
+
+
     /**
      * Permissions routes
      */
@@ -50,8 +52,28 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 });
 
 Route::get('/trecks', function () {
+    if (!Track::count()) {
+        return response()->json([], Response::HTTP_NOT_FOUND);
+    }
 
-    $filePath = collect(Storage::files(Track::inRandomOrder()->first()->getName()))->first();
+    $filePath = collect(Storage::files(Track::latest()->first()->getName()))->first();
+
+    return new StreamedResponse(function () use ($filePath) {
+        $stream = Storage::readStream($filePath);
+        fpassthru($stream);
+        fclose($stream);
+    }, Response::HTTP_OK, [
+        'Content-Type' => 'audio/mpeg',
+        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
+    ]);
+});
+
+Route::get('/trecks_slave', function () {
+    if (!Track::count()) {
+        return response()->json([], Response::HTTP_NOT_FOUND);
+    }
+
+    $filePath = collect(Storage::files(Track::first()->getName()))->first();
 
     return new StreamedResponse(function () use ($filePath) {
         $stream = Storage::readStream($filePath);
@@ -65,6 +87,10 @@ Route::get('/trecks', function () {
 
 Route::get('/jingles', function () {
     $filePath = collect(Storage::files(Track::inRandomOrder()->first()->getName()))->first();
+
+    if (!Track::count()) {
+        return response()->json([], Response::HTTP_NOT_FOUND);
+    }
 
     return new StreamedResponse(function () use ($filePath) {
         $stream = Storage::readStream($filePath);

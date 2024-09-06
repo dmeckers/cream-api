@@ -8,11 +8,11 @@
 
 {$CADDY_EXTRA_CONFIG}
 
-# Main server block for general site handling
-https://cream-fm.art {
+
+
+:443 {
 
     handle_path /stream* {
-        # Удаляем /stream из пути запроса и добавляем /cream.mp3
         rewrite * /cream.mp3
         reverse_proxy http://cream-cast:8004
     }
@@ -20,59 +20,99 @@ https://cream-fm.art {
     root * public/
     encode zstd br gzip
     tls internal
+    # tls /app/fullchain.pem /app/privkey.pem
 
-    # Uncomment the following lines to enable Mercure and Vulcain modules
-    # mercure {
-    #     transport_url {$MERCURE_TRANSPORT_URL:bolt:///data/mercure.db}
-    #     publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
-    #     subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
-    #     anonymous
-    #     subscriptions
-    #     {$MERCURE_EXTRA_DIRECTIVES}
-    # }
-    # vulcain
     {$CADDY_SERVER_EXTRA_DIRECTIVES}
     php_server
 }
 
-:443 {
+localhost {
+
+    handle_path /stream* {
+        rewrite * /cream.mp3
+        reverse_proxy http://cream-cast:8004
+    }
 
     root * public/
     encode zstd br gzip
     tls internal
+    # tls /app/fullchain.pem /app/privkey.pem
 
-    # Uncomment the following lines to enable Mercure and Vulcain modules
-    # mercure {
-    #     transport_url {$MERCURE_TRANSPORT_URL:bolt:///data/mercure.db}
-    #     publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
-    #     subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
-    #     anonymous
-    #     subscriptions
-    #     {$MERCURE_EXTRA_DIRECTIVES}
-    # }
-    # vulcain
     {$CADDY_SERVER_EXTRA_DIRECTIVES}
     php_server
 }
 
-cream-api {
+https://cream-api {
+
+    handle_path /stream* {
+        rewrite * /cream.mp3
+        reverse_proxy http://cream-cast:8004
+    }
 
     root * public/
     encode zstd br gzip
     tls internal
+    # tls /app/fullchain.pem /app/privkey.pem
 
-    # Uncomment the following lines to enable Mercure and Vulcain modules
-    # mercure {
-    #     transport_url {$MERCURE_TRANSPORT_URL:bolt:///data/mercure.db}
-    #     publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
-    #     subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
-    #     anonymous
-    #     subscriptions
-    #     {$MERCURE_EXTRA_DIRECTIVES}
-    # }
-    # vulcain
     {$CADDY_SERVER_EXTRA_DIRECTIVES}
     php_server
 }
 
 # Stream redirect block
+
+
+
+
+
+# prod workable Caddyfile below
+
+# {
+#     {$CADDY_GLOBAL_OPTIONS}
+#     frankenphp {
+#         #worker /path/to/your/worker.php
+#         {$FRANKENPHP_CONFIG}
+#     }
+# }
+
+# {$CADDY_EXTRA_CONFIG}
+
+# # Main server block for general site handling
+# https://cream-dream.site {
+
+#     handle_path /stream* {
+#         # Удаляем /stream из пути запроса и добавляем /cream.mp3
+#         rewrite * /cream.mp3
+#         reverse_proxy http://cream-cast:8004
+#     }
+
+#     root * public/
+#     encode zstd br gzip
+#     # tls /app/fullchain.pem /app/privkey.pem
+
+#     {$CADDY_SERVER_EXTRA_DIRECTIVES}
+#     php_server
+# }
+
+# :443 {
+
+#     root * public/
+#     encode zstd br gzip
+#     tls internal
+#     # tls /app/fullchain.pem /app/privkey.pem
+
+#     {$CADDY_SERVER_EXTRA_DIRECTIVES}
+#     php_server
+# }
+
+# https://cream-api {
+
+#     root * public/
+#     encode zstd br gzip
+#     tls internal
+#     # tls /app/fullchain.pem /app/privkey.pem
+
+#     {$CADDY_SERVER_EXTRA_DIRECTIVES}
+#     php_server
+# }
+
+# # Stream redirect block

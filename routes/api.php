@@ -72,6 +72,7 @@ Route::get('/trecks_slave', function () {
     if (!Track::count()) {
         return response()->json([], Response::HTTP_NOT_FOUND);
     }
+    dump('a');
 
     $filePath = collect(Storage::files(Track::first()->getName()))->first();
 

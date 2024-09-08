@@ -40,4 +40,12 @@ jobs:
 
             docker-compose -f docker-compose.dev.yml up -d --build cream-api
 
+            docker exec -it $(docker ps -qf "name=cream-api") /bin/bash -c "
+              echo 'Running commands inside the container...'
+              touch /app/.env
+              echo 'APP_KEY=""'>> /app/.env
+              php artisan key:generate
+              composer migrate
+            "
+
             docker-compose restart cream-nginx

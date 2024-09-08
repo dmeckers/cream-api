@@ -6,8 +6,6 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
-
-    dd('asdf');
     return response()->json(['message' => 'Hello World!!!']);
 });
 

@@ -33,3 +33,9 @@ jobs:
             cd ~/cream/cream-api && git fetch && git checkout dev && git pull
 
             cd ~/cream
+
+            docker-compose stop cream-api
+
+            docker rm $(docker ps -a | grep cream-api | awk '{print $1}')
+
+            docker-compose -f docker-compose.dev.yml up -d --build cream-api

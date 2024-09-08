@@ -40,7 +40,7 @@ jobs:
 
             docker-compose -f docker-compose.dev.yml up -d --build cream-api
 
-            docker exec -it cream-api /bin/bash -c "
+            docker exec cream-api /bin/bash -c "
               echo 'Running commands inside the container...'
               touch /app/.env
               echo 'APP_KEY=""'>> /app/.env

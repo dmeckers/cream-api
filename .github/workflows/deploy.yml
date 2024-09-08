@@ -39,3 +39,5 @@ jobs:
             docker rm $(docker ps -a | grep cream-api | awk '{print $1}')
 
             docker-compose -f docker-compose.dev.yml up -d --build cream-api
+
+            docker-compose restart cream-nginx

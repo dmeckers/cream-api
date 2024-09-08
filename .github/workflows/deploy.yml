@@ -1,0 +1,35 @@
+name: Deploy cream frontend
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy-staging:
+    if: github.ref == 'refs/heads/dev'
+    environment: staging
+    name: Deploy to staging
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_WORKER_USERNAME }}s
+          password: ${{ secrets.SSH_WORKER_PASSWORD }}
+          script: |
+
+            DIRECTORY="~/cream"
+            if [ -d "$DIRECTORY" ]; then
+              echo "Removing existing 'cream' directory..."
+              echo ${{ secrets.SSH_WORKER_PASSWORD }} | sudo -S rm -rf "$DIRECTORY"
+            fi
+
+            cd ~/cream/cream-api && git fetch && git checkout dev && git pull
+
+            cd ~/cream

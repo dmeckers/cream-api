@@ -20,7 +20,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_WORKER_USERNAME }}s
+          username: ${{ secrets.SSH_WORKER_USERNAME }}
           password: ${{ secrets.SSH_WORKER_PASSWORD }}
           script: |
 

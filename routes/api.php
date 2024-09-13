@@ -11,6 +11,95 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+Route::middleware([
+    \App\Http\Middleware\SetTelegramGuard::class
+])->group(function () {
+
+    Route::middleware(\App\Http\Middleware\AllowUserFromTelegramOnly::class)->group(
+        function () {
+
+
+            //TODO here will be all the stuff
+    
+
+            Route::get('/me', [AuthController::class, 'me']);
+        }
+    );
+
+    Route::prefix('auth')->group(function () {
+        Route::post('/refresh', [AuthController::class, 'refresh']);
+    });
+});
+
+// Route::get('/trecks', function () {
+//     if (!Track::count()) {
+//         return response()->json([], Response::HTTP_NOT_FOUND);
+//     }
+
+//     $filePath = collect(Storage::files(Track::latest()->first()->getName()))->first();
+
+//     return new StreamedResponse(function () use ($filePath) {
+//         $stream = Storage::readStream($filePath);
+//         fpassthru($stream);
+//         fclose($stream);
+//     }, Response::HTTP_OK, [
+//         'Content-Type' => 'audio/mpeg',
+//         'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
+//     ]);
+// });
+
+// Route::get('/trecks_slave', function () {
+//     if (!Track::count()) {
+//         return response()->json([], Response::HTTP_NOT_FOUND);
+//     }
+//     dump('a');
+
+//     $filePath = collect(Storage::files(Track::first()->getName()))->first();
+
+//     return new StreamedResponse(function () use ($filePath) {
+//         $stream = Storage::readStream($filePath);
+//         fpassthru($stream);
+//         fclose($stream);
+//     }, Response::HTTP_OK, [
+//         'Content-Type' => 'audio/mpeg',
+//         'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
+//     ]);
+// });
+
+// Route::get('/jingles', function () {
+//     $filePath = collect(Storage::files(Track::inRandomOrder()->first()->getName()))->first();
+
+//     if (!Track::count()) {
+//         return response()->json([], Response::HTTP_NOT_FOUND);
+//     }
+
+//     return new StreamedResponse(function () use ($filePath) {
+//         $stream = Storage::readStream($filePath);
+//         fpassthru($stream);
+//         fclose($stream);
+//     }, Response::HTTP_OK, [
+//         'Content-Type' => 'audio/mpeg',
+//         'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
+//     ]);
+// });
+
+
+// /**
+//  * Auth routes
+//  */
+// Route::
+//         namespace('Auth')->group(function () {
+//             Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+//             Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+//             Route::get('/sanctum/token', [AuthController::class, 'refreshCookies']);
+//         });
+
+// Route::get('/test', function () {
+//     return response()->json(['message' => 'Hello world!']);
+// });
+
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::prefix('tracks')->group(function () {
@@ -28,8 +117,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
             }
         );
     });
-
-
 
     /**
      * Permissions routes
@@ -50,68 +137,3 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         Route::get('/list-role-permissions', [PermissionController::class, 'listRolePermissions']);
     });
 });
-
-Route::get('/trecks', function () {
-    if (!Track::count()) {
-        return response()->json([], Response::HTTP_NOT_FOUND);
-    }
-
-    $filePath = collect(Storage::files(Track::latest()->first()->getName()))->first();
-
-    return new StreamedResponse(function () use ($filePath) {
-        $stream = Storage::readStream($filePath);
-        fpassthru($stream);
-        fclose($stream);
-    }, Response::HTTP_OK, [
-        'Content-Type' => 'audio/mpeg',
-        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
-    ]);
-});
-
-Route::get('/trecks_slave', function () {
-    if (!Track::count()) {
-        return response()->json([], Response::HTTP_NOT_FOUND);
-    }
-    dump('a');
-
-    $filePath = collect(Storage::files(Track::first()->getName()))->first();
-
-    return new StreamedResponse(function () use ($filePath) {
-        $stream = Storage::readStream($filePath);
-        fpassthru($stream);
-        fclose($stream);
-    }, Response::HTTP_OK, [
-        'Content-Type' => 'audio/mpeg',
-        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
-    ]);
-});
-
-Route::get('/jingles', function () {
-    $filePath = collect(Storage::files(Track::inRandomOrder()->first()->getName()))->first();
-
-    if (!Track::count()) {
-        return response()->json([], Response::HTTP_NOT_FOUND);
-    }
-
-    return new StreamedResponse(function () use ($filePath) {
-        $stream = Storage::readStream($filePath);
-        fpassthru($stream);
-        fclose($stream);
-    }, Response::HTTP_OK, [
-        'Content-Type' => 'audio/mpeg',
-        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
-    ]);
-});
-
-
-/**
- * Auth routes
- */
-Route::
-        namespace('Auth')->group(function () {
-            Route::post('/login', [AuthController::class, 'login'])->name('login');
-
-            Route::post('/register', [AuthController::class, 'register'])->name('register');
-
-            Route::get('/sanctum/token', [AuthController::class, 'refreshCookies']);
-        });

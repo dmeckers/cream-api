@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Utils;
 
+use App\Models\TelegramUser;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 
 class LaravelGlobals
@@ -11,5 +14,10 @@ class LaravelGlobals
     public function jsonResponse(array $response, int $code = 200): JsonResponse
     {
         return response()->json($response, $code);
+    }
+
+    public function user(): TelegramUser|User|Authenticatable|null
+    {
+        return auth()->user();
     }
 }

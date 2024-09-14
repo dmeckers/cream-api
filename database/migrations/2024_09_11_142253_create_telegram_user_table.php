@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger(self::TELEGRAM_USER_ID)->unique();
             $table->string(self::NAME);
-            $table->string(self::USERNAME);
+            $table->string(self::USERNAME)->nullable();
             $table->timestamps();
         });
     }

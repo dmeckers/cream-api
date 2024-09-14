@@ -30,17 +30,26 @@ class UserDbRepository
         return $this->user->firstWhere(User::EMAIL, $email);
     }
 
-    public function doesTelegramUserExists(array $credentials): bool
+    public function doesTelegramUserExists(int $telegramUserId): bool
     {
         return $this->telegramUser->where(
             TelegramUser::TELEGRAM_USER_ID,
             '=',
-            $credentials[TelegramUser::ID]
+            $telegramUserId
         )->exists();
     }
 
     public function createTelegramUser(array $credentials): TelegramUser
     {
         return $this->telegramUser->create($credentials);
+    }
+
+    public function getTelegramUserByTelegramId(int $telegramUserId): TelegramUser
+    {
+        return $this->telegramUser->where(
+            TelegramUser::TELEGRAM_USER_ID,
+            '=',
+            $telegramUserId
+        )->firstOrFail();
     }
 }

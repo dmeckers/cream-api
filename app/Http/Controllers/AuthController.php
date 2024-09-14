@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginUserRequest;
 use App\Http\Requests\Auth\RegisterUserRequest;
-use App\Http\Requests\Auth\SignInOrSignUpViaTelegramRequest;
+use App\Http\Requests\Auth\TelegramAuthRequest;
 use App\Models\TelegramUser;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Response;
@@ -29,13 +29,21 @@ class AuthController extends Controller
         return $this->laravelGlobals->user();
     }
 
-    public function refresh(SignInOrSignUpViaTelegramRequest $request): JsonResponse
+    public function refresh(TelegramAuthRequest $request): JsonResponse
     {
         try {
-            return $this->laravelGlobals->jsonResponse([
-                $this->userLogicRepository->signInOrSignUpViaTelegram($request->data())
+            $response = $this->laravelGlobals->jsonResponse([
+                $this->userLogicRepository
+                    ->signInOrSignUpViaTelegram($request->data())
+                    ->createToken('auth_token')
+                    ->plainTextToken
             ]);
+
+            \Log::info('response', ['response' => $response]);
+            return $response;
         } catch (\Throwable $th) {
+            \Log::error($th->getMessage(), ['context' => $th->getTrace()]);
+
             return $this->laravelGlobals->jsonResponse([
                 'error' => $th->getMessage()
             ], Response::HTTP_BAD_REQUEST);

@@ -4,6 +4,7 @@ use App\Auth\Enums\PermissionEnum;
 use App\Enums\RouteValidationEnum;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\StationsController;
 use App\Http\Controllers\TracksController;
 use App\Models\Track;
 use Illuminate\Http\Response;
@@ -19,9 +20,40 @@ Route::middleware([
         function () {
 
 
-            //TODO here will be all the stuff
-    
+            Route::prefix('stations')->group(function () {
 
+                Route::get('/', [StationsController::class, 'list']);
+                Route::post('/', [StationsController::class, 'storeStation']);
+                Route::group(
+                    [
+                        'prefix' => '/{station_id}',
+                        'where' => ['station_id' => RouteValidationEnum::ID->value]
+                    ],
+                    function () {
+                        Route::delete('/', [StationsController::class, 'deleteStation']);
+                        Route::get('/', [StationsController::class, 'getStation']);
+                        Route::post('/', [StationsController::class, 'updateStation']);
+                    }
+                );
+            });
+
+            // Route::prefix('playlists')->group(function () {
+    
+            //     Route::get('/', [PlaylistsController::class, 'list']);
+            //     Route::post('/', [PlaylistsController::class, 'storePlaylist']);
+            //     Route::group(
+            //         [
+            //             'prefix' => '/{playlist_id}',
+            //             'where' => ['playlist_id' => RouteValidationEnum::ID->value]
+            //         ],
+            //         function () {
+            //             Route::delete('/', [PlaylistsController::class, 'deletePlaylist']);
+            //             Route::get('/', [PlaylistsController::class, 'getPlaylist']);
+            //             Route::post('/', [PlaylistsController::class, 'updatePlaylist']);
+            //         }
+            //     );
+            // });
+    
             Route::get('/me', [AuthController::class, 'me']);
         }
     );

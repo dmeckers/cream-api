@@ -4,37 +4,47 @@ declare(strict_types=1);
 
 namespace App\Auth\Guards;
 
+use App\Models\TelegramUser;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
 use \Illuminate\Cookie\CookieJar;
 use Illuminate\Support\Facades\Cookie;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class TelegramGuard implements Guard
 {
     protected $user;
 
-    private const COOKIE_LIFETIME_30_DAYS = 60 * 24 * 30;
-    private const COOKIE_IDENTITY         = 'user_id';
+    public const GUARD_NAME = 'telegram';
 
     public function __construct(
         protected readonly UserProvider $provider,
         protected readonly Request $request,
-        private readonly CookieJar $cookieJar,
+        protected readonly PersonalAccessToken $personalAccessToken,
     ) {
     }
 
+    private $isRetrievingUser = false;
+
     public function user(): mixed
     {
-        if ($this->user) {
-            $this->user;
+        if ($this->isRetrievingUser) {
+            return null;
         }
 
-        $userId = $this->request->cookie(self::COOKIE_IDENTITY);
+        $this->isRetrievingUser = true;
 
-        if ($userId) {
-            $this->user = $this->provider->retrieveById(identifier: $userId);
+        $token = $this->request->bearerToken();
+
+        if (!$token) {
+            $this->isRetrievingUser = false;
+            return null;
         }
+
+        $this->user = PersonalAccessToken::findToken($token)?->tokenable()->first();
+
+        $this->isRetrievingUser = false;
 
         return $this->user;
     }
@@ -43,30 +53,30 @@ class TelegramGuard implements Guard
     {
         \Log::info("CHECKING CREDENTIALS", $credentials);
 
-        if (isset($credentials['auth_data'])) {
-            $auth_data = $credentials['auth_data'];
+        if (isset($credentials['id'])) {
+            // $auth_data = $credentials['auth_data'];
+            // if ($this->verifyTelegramData($auth_data)) {
+            // }
 
-            if ($this->verifyTelegramData($auth_data)) {
-                $this->user = $this->provider->retrieveById($auth_data['id']);
-                if ($this->user) {
-                    $this->setAuthCookie($this->user->getAuthIdentifier());
-                    return true;
-                }
-            }
+            $this->user = $this->provider->retrieveByCredentials([
+                TelegramUser::TELEGRAM_USER_ID => $credentials['id']
+            ]);
+
+            return $this->user !== null;
         }
 
         return false;
     }
 
-    protected function setAuthCookie($userId)
-    {
-        $cookie = $this->cookieJar->make(
-            self::COOKIE_IDENTITY,
-            $userId,
-            self::COOKIE_LIFETIME_30_DAYS
-        );
 
-        $this->request->headers->setCookie($cookie);
+    public function attempt(array $credentials = [], bool $remember = false): bool
+    {
+        if ($this->validate($credentials)) {
+            $this->login($this->user);
+            return true;
+        }
+
+        return false;
     }
 
     public function check(): bool
@@ -96,32 +106,41 @@ class TelegramGuard implements Guard
         return $this->user() !== null;
     }
 
-    private function verifyTelegramData($auth_data): bool
+    public function login($user): bool
     {
-        \Log::info("VERIFYING TELEGRAM DATA", $auth_data);
+        $this->setUser($user);
 
-        $botToken = env(key: 'TELEGRAM_BOT_TOKEN');
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-        $checkString = collect(value: $auth_data)
-            ->except(keys: 'hash')
-            ->map(callback: fn($value, $key): string => (string) $key . "=" . (string) $value)
-            ->sortKeys()
-            ->implode(value: "\n");
-
-        $secretKey = hash_hmac(
-            algo: 'sha256',
-            data: $botToken,
-            key: 'WebAppData',
-            binary: true
-        );
-
-        $calculatedHash = hash_hmac(
-            algo: 'sha256',
-            data: $checkString,
-            key: $secretKey
-        );
-
-        // Telegram's hash comes as hex, and we need to compare it
-        return hash_equals(known_string: $calculatedHash, user_string: $auth_data['hash']);
+        return true;
     }
+
+    // private function verifyTelegramData($auth_data): bool
+    // {
+    //     \Log::info("VERIFYING TELEGRAM DATA", $auth_data);
+
+    //     $botToken = env(key: 'TELEGRAM_BOT_TOKEN');
+
+    //     $checkString = collect(value: $auth_data)
+    //         ->except(keys: 'hash')
+    //         ->map(callback: fn($value, $key): string => (string) $key . "=" . (string) $value)
+    //         ->sortKeys()
+    //         ->implode(value: "\n");
+
+    //     $secretKey = hash_hmac(
+    //         algo: 'sha256',
+    //         data: $botToken,
+    //         key: 'WebAppData',
+    //         binary: true
+    //     );
+
+    //     $calculatedHash = hash_hmac(
+    //         algo: 'sha256',
+    //         data: $checkString,
+    //         key: $secretKey
+    //     );
+
+    //     // Telegram's hash comes as hex, and we need to compare it
+    //     return hash_equals(known_string: $calculatedHash, user_string: $auth_data['hash']);
+    // }
 }

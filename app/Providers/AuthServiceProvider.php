@@ -23,11 +23,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Auth::extend('telegram', function ($app, $name, array $config) {
+        Auth::extend(TelegramGuard::GUARD_NAME, function ($app, $name, array $config) {
             return new TelegramGuard(
                 Auth::createUserProvider($config['provider']),
                 $app['request'],
-                $app['cookie']
+                $app->make('Laravel\Sanctum\PersonalAccessToken')
             );
         });
     }

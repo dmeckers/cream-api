@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Auth\Guards\TelegramGuard;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ class AllowUserFromTelegramOnly
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth('telegram')->guest()) {
+        if (auth(TelegramGuard::GUARD_NAME)->guest()) {
             abort(Response::HTTP_UNAUTHORIZED, self::UNAUTHORIZED_MESSAGE);
         }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\StationsController;
 use App\Http\Controllers\TracksController;
 use App\Models\Track;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -23,13 +24,17 @@ Route::middleware([
             Route::prefix('stations')->group(function () {
 
                 Route::get('/', [StationsController::class, 'list']);
-                Route::post('/', [StationsController::class, 'storeStation']);
+
                 Route::group(
                     [
                         'prefix' => '/{station_id}',
                         'where' => ['station_id' => RouteValidationEnum::ID->value]
                     ],
                     function () {
+                        Route::get('/next', [StationsController::class, 'nextTrack']);
+                        Route::post('/start', [StationsController::class, 'startStation']);
+                        Route::post('/stop', [StationsController::class, 'stopStation']);
+
                         Route::delete('/', [StationsController::class, 'deleteStation']);
                         Route::get('/', [StationsController::class, 'getStation']);
                         Route::post('/', [StationsController::class, 'updateStation']);

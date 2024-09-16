@@ -36,6 +36,12 @@ return [
             'throw' => false,
         ],
 
+        'radio' => [
+            'driver' => 'local',
+            'root' => storage_path('app/radio/scripts'),
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

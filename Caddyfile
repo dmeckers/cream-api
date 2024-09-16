@@ -8,12 +8,10 @@
 
 {$CADDY_EXTRA_CONFIG}
 
-
-
 :443 {
 
     handle_path /stream* {
-        rewrite * /cream.mp3
+        rewrite * /{path_regexp.stream.*stream/(.*)}.mp3
         reverse_proxy http://cream-cast:8004
     }
 
@@ -29,7 +27,7 @@
 localhost {
 
     handle_path /stream* {
-        rewrite * /cream.mp3
+        rewrite * /{path_regexp.stream.*stream/(.*)}.mp3
         reverse_proxy http://cream-cast:8004
     }
 
@@ -45,7 +43,7 @@ localhost {
 https://cream-api {
 
     handle_path /stream* {
-        rewrite * /cream.mp3
+        rewrite * /{path_regexp.stream.*stream/(.*)}.mp3
         reverse_proxy http://cream-cast:8004
     }
 
@@ -59,10 +57,6 @@ https://cream-api {
 }
 
 # Stream redirect block
-
-
-
-
 
 # prod workable Caddyfile below
 
@@ -81,7 +75,7 @@ https://cream-api {
 
 #     handle_path /stream* {
 #         # Удаляем /stream из пути запроса и добавляем /cream.mp3
-#         rewrite * /cream.mp3
+#         rewrite * /{path_regexp.stream.*stream/(.*)}.mp3
 #         reverse_proxy http://cream-cast:8004
 #     }
 

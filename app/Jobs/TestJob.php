@@ -8,12 +8,16 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class CreateStationJob implements ShouldQueue
+class TestJob implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * Create a new job instance.
+     */
     public function __construct()
     {
+        //
     }
 
     /**
@@ -21,6 +25,6 @@ class CreateStationJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        \Log::info('TestJob executed');
     }
 }

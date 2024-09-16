@@ -12,7 +12,9 @@ RUN apt-get update && \
         libxml2-dev \
         libpng-dev \
         libjpeg-dev \
-        libfreetype6-dev && \
+        libfreetype6-dev \
+        openssh-client \
+        openssh-server && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install \
         pdo_pgsql \
@@ -31,4 +33,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY ../ .
 
-RUN composer install
+RUN composer install && composer dump-autoload

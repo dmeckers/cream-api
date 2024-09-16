@@ -14,6 +14,7 @@ class RadioStationPlaylist extends Model
 {
     use HasFactory;
 
+    public const ID    = 'id';
     public const TABLE = 'playlists';
     public const NAME  = 'name';
 
